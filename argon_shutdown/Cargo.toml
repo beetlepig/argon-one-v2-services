@@ -1,0 +1,7 @@
+[package]
+name = "argon_shutdown"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+shared_utils.workspace = true

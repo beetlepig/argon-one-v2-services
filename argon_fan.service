@@ -1,0 +1,9 @@
+[Unit]
+Description=Argon One Fan Service
+After=multi-user.target
+[Service]
+Type=simple
+Restart=on-abnormal
+ExecStart=/usr/bin/argon_fan
+[Install]
+WantedBy=multi-user.target
