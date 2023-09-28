@@ -4,6 +4,7 @@ After=multi-user.target
 [Service]
 Type=simple
 Restart=on-abnormal
+RemainAfterExit=true
 ExecStart=/usr/bin/argon_shutdown_button
 [Install]
 WantedBy=multi-user.target
