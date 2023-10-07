@@ -18,7 +18,7 @@ You can download the latest [Release](https://github.com/beetlepig/argon-one-v2-
 
 Then you extract the package.
 
-    tar zxvf ArgonOneV2Services.tgz
+    tar -xvf ArgonOneV2Services.tgz
 
 Go into the folder.
 
@@ -26,7 +26,13 @@ Go into the folder.
 
 Run install script (you may need to give execution permission to the script).
 
-    ./deploy.sh
+    ./install.sh
+
+## Uninstallation
+
+Run the uninstall script.
+
+    ./uninstall.sh
 
 
 ## How to update?
@@ -35,6 +41,17 @@ Just follow the installation step again, it will replace the old binaries with t
 ## Configuration file
 
 The services use a YAML file to get the configuration options. All the configuration is done by editing the `argon_services_config.yaml` file.
+
+Once installed, you can change the configuration by editing the config file previously copied to your system.
+
+    sudo nano /etc/argonone/argon_services_config.yaml
+
+Then, you can restart the systemd services to apply the changes (or you can reboot the system).
+
+    sudo systemctl restart argon_fan.service
+
+    sudo systemctl restart argon_shutdown_button.service
+
 
 ## **Fan configuration**
 
