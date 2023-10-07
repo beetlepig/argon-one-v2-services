@@ -4,6 +4,7 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-rppal = "0.14.1"
+rppal = "0.15"
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9"
+rkyv = { git = "https://github.com/beetlepig/rkyv.git", branch = "0.7-OsStr-impl", features = ["validation"] }

@@ -1,7 +1,15 @@
 #!/bin/bash
 
-fan_service="argon_fan.service"
-shutdown_button_service="argon_shutdown_button.service"
+config_directory="/etc/argonone"
+config_file="argon_services_config.yaml"
+
+fan_binary_name="argon_fan"
+fan_service="$fan_binary_name.service"
+
+shutdown_button_binary_name="argon_shutdown_button"
+shutdown_button_service="$shutdown_button_binary_name.service"
+
+shutdown_binary_name="argon_shutdown"
 
 
 # Check if raspi-config is available, this package should be available in most raspberry pi distributions.
@@ -12,6 +20,14 @@ then
 	echo "Enabling i2c and serial..."
 	sudo raspi-config nonint do_i2c 0
 	sudo raspi-config nonint do_serial 2
+fi
+
+# Check if the config directory exits
+if [ ! -d $config_directory ]; then
+  # If it does not exist, create the folder
+  echo "Creating config directory: $config_directory"
+  sudo mkdir -p $config_directory
+  sudo chmod 755 $config_directory
 fi
 
 
@@ -31,33 +47,33 @@ fi
 
 # Copy configuration file if it exists
 if test -f "argon_services_config.yaml"; then
-  echo "Moving config file to /etc/argon_services_config.yaml"
-  sudo cp ./argon_services_config.yaml /etc/
+  echo "Moving config file to $config_directory/$config_file"
+  sudo cp ./$config_file $config_directory
 fi
 
 
 echo "Copying executables..."
 
 # Copy fan executable
-sudo chmod 755 ./argon_fan
-sudo cp ./argon_fan /usr/bin/
-
-# Copy shutdown executable
-sudo chmod 755 ./argon_shutdown
-sudo cp ./argon_shutdown /lib/systemd/system-shutdown/
+sudo chmod 755 ./$fan_binary_name
+sudo cp ./$fan_binary_name /usr/bin/
 
 # Copy power button executable
-sudo chmod 755 ./argon_shutdown_button
-sudo cp ./argon_shutdown_button /usr/bin/
+sudo chmod 755 ./$shutdown_button_binary_name
+sudo cp ./$shutdown_button_binary_name /usr/bin/
+
+# Copy shutdown executable
+sudo chmod 755 ./$shutdown_binary_name
+sudo cp ./$shutdown_binary_name /lib/systemd/system-shutdown/
 
 
 # Copy fan service file
-sudo chmod 644 ./argon_fan.service
-sudo cp ./argon_fan.service /lib/systemd/system/
+sudo chmod 644 ./$fan_service
+sudo cp ./$fan_service /lib/systemd/system/
 
 # Copy power button service file
-sudo chmod 644 ./argon_shutdown_button.service
-sudo cp ./argon_shutdown_button.service /lib/systemd/system/
+sudo chmod 644 ./$shutdown_button_service
+sudo cp ./$shutdown_button_service /lib/systemd/system/
 
 
 echo "Creating and running systemd services..."
