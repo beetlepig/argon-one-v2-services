@@ -14,7 +14,7 @@ A Rust implementation of the argon one case services, it aims to be a blazingly 
 
 You can download the latest [Release](https://github.com/beetlepig/argon-one-v2-services/releases/latest) or use command line to download the package.
 
-    curl -LJO https://github.com/beetlepig/argon-one-v2-services/releases/download/0.1.0/ArgonOneV2Services.tgz
+    curl -LJO https://github.com/beetlepig/argon-one-v2-services/releases/download/0.2.0/ArgonOneV2Services_aarch64.tgz
 
 Then you extract the package.
 
