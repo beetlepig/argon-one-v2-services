@@ -1,8 +1,8 @@
-use crate::load_yaml::{TempMatrixRKYV, TempMatrixYAML};
+use crate::load_yaml::{TemperatureMatrixVec, TemperatureMatrixHashMap};
 use std::cmp::Ordering;
 use std::collections::HashMap;
 
-pub fn matrix_mapper(mut matrix: TempMatrixYAML) -> TempMatrixRKYV {
+pub fn matrix_mapper(mut matrix: TemperatureMatrixVec) -> TemperatureMatrixHashMap {
     let mut mapped_temperatures = HashMap::with_capacity(101);
     let len = matrix.len();
 

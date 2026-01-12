@@ -8,7 +8,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 license-file = "LICENSE.md"
 
@@ -16,6 +16,7 @@ license-file = "LICENSE.md"
 shared_utils = { path = "shared_utils" }
 
 [profile.release]
+opt-level = 3
 codegen-units = 1
-strip = "symbols"
-lto = "fat"
+strip = true
+lto = true

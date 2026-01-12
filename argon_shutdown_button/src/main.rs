@@ -1,8 +1,5 @@
 use shared_utils::initialize_device::initialize_gpio_pin;
-use shared_utils::load_yaml::{
-    load_argon_config, ArchivedPowerScript, ArgonConfigValue, PowerScript,
-};
-use shared_utils::rkyv::option::ArchivedOption;
+use shared_utils::load_yaml::{load_argon_config, ArgonConfig, PowerScriptOption};
 use shared_utils::rppal::gpio::{InputPin, Level};
 use std::path::Path;
 use std::process::{Child, Command};
@@ -20,9 +17,8 @@ fn main() {
     match pin_result {
         Ok(pin) => {
             println!("GPIO Pin 4 initialized successfully");
-            load_argon_config(|final_argon_config| {
-                wait_shutdown_button_interrupt(pin, final_argon_config);
-            });
+            let argon_config = load_argon_config();
+            wait_shutdown_button_interrupt(pin, argon_config);
         }
         Err(e) => {
             eprintln!("Error initializing PIN 4: {}", e)
@@ -32,7 +28,7 @@ fn main() {
     println!("Shutdown button program finished");
 }
 
-fn wait_shutdown_button_interrupt(mut pin: InputPin, argon_config: ArgonConfigValue) {
+fn wait_shutdown_button_interrupt(mut pin: InputPin, argon_config: ArgonConfig) {
     let mut pulse_time: u16;
     let selected_power_option: PowerOptions;
 
@@ -79,28 +75,14 @@ fn wait_shutdown_button_interrupt(mut pin: InputPin, argon_config: ArgonConfigVa
     run_shutdown_or_reboot_command(selected_power_option, argon_config);
 }
 
-fn run_shutdown_or_reboot_command(power_option: PowerOptions, argon_config: ArgonConfigValue) {
+fn run_shutdown_or_reboot_command(power_option: PowerOptions, argon_config: ArgonConfig) {
     let command_result = match power_option {
         PowerOptions::Shutdown => {
-            let shutdown_power_script = match argon_config {
-                ArgonConfigValue::Archived(archived_config) => {
-                    PowerScriptConfigValue::ArchivedPower(&archived_config.shutdown_script)
-                }
-                ArgonConfigValue::NonArchived(non_archived_config) => {
-                    PowerScriptConfigValue::NonArchivedPower(non_archived_config.shutdown_script)
-                }
-            };
+            let shutdown_power_script = argon_config.shutdown_script;
             run_power_command(shutdown_power_script, "shutdown", vec!["-h", "now"])
         }
         PowerOptions::Reboot => {
-            let reboot_power_script = match argon_config {
-                ArgonConfigValue::Archived(archived_config) => {
-                    PowerScriptConfigValue::ArchivedPower(&archived_config.reboot_script)
-                }
-                ArgonConfigValue::NonArchived(non_archived_config) => {
-                    PowerScriptConfigValue::NonArchivedPower(non_archived_config.reboot_script)
-                }
-            };
+            let reboot_power_script = argon_config.reboot_script;
             run_power_command(reboot_power_script, "reboot", vec![])
         }
     };
@@ -115,18 +97,12 @@ fn run_shutdown_or_reboot_command(power_option: PowerOptions, argon_config: Argo
     }
 }
 
-enum PowerScriptConfigValue<'a> {
-    ArchivedPower(&'a ArchivedOption<ArchivedPowerScript>),
-    NonArchivedPower(Option<PowerScript>),
-}
 fn run_power_command(
-    script_config_option: PowerScriptConfigValue,
+    script_config_option: PowerScriptOption,
     fallback_command: &str,
     fallback_args: Vec<&str>,
 ) -> std::io::Result<Child> {
-    if let PowerScriptConfigValue::ArchivedPower(ArchivedOption::Some(archived_power_script)) =
-        script_config_option
-    {
+    if let Some(archived_power_script) = script_config_option {
         let location = archived_power_script.location.as_str();
         let args = archived_power_script.args.as_slice();
         let path = Path::new(location);
@@ -134,22 +110,6 @@ fn run_power_command(
             Ok(metadata) => {
                 if metadata.is_file() {
                     return Command::new(path).args(args).spawn();
-                }
-            }
-            Err(e) => {
-                eprintln!("No a valid script: {}", e);
-            }
-        }
-    } else if let PowerScriptConfigValue::NonArchivedPower(Some(non_archived_power_script)) =
-        script_config_option
-    {
-        let location = non_archived_power_script.location.as_str();
-        let args = non_archived_power_script.args.as_slice();
-        let path = Path::new(location);
-        match fs::metadata(path) {
-            Ok(metadata) => {
-                if metadata.is_file() {
-                    return Command::new(location).args(args).spawn();
                 }
             }
             Err(e) => {
