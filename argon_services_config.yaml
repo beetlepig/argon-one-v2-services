@@ -7,9 +7,3 @@ fan_config:
     - [ 55, 10 ]
     - [ 60, 40 ]
     - [ 65, 100 ]
-shutdown_script:
-  location: "/home/admin/config.scripts/blitz.shutdown.sh"
-  args: []
-reboot_script:
-  location: "/home/admin/config.scripts/blitz.shutdown.sh"
-  args: ["reboot"]
