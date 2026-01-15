@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
 
-const YAML_CONFIG_PATH: &str = "/etc/argon_services_config.yaml";
+const YAML_CONFIG_PATH: &str = "/etc/argonone/argon_services_config.yaml";
 
 pub type TemperatureMatrixVec = Vec<[u8; 2]>;
 pub type TemperatureMatrixHashMap = HashMap<u8, u8>;
