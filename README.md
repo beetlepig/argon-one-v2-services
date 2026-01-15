@@ -16,11 +16,11 @@ You can download the latest [Release](https://github.com/beetlepig/argon-one-v2-
 
 _64-bit systems_
 
-    curl -LJO https://github.com/beetlepig/argon-one-v2-services/releases/download/0.2.0/ArgonOneV2Services_aarch64.tgz
+    curl -LJO https://github.com/beetlepig/argon-one-v2-services/releases/latest/download/ArgonOneV2Services_aarch64.tgz
 
 _32-bit systems_
 
-    curl -LJO https://github.com/beetlepig/argon-one-v2-services/releases/download/0.2.0/ArgonOneV2Services_armv7.tgz
+    curl -LJO https://github.com/beetlepig/argon-one-v2-services/releases/latest/download/ArgonOneV2Services_armv7.tgz
 
 Then you extract the package.
 
@@ -39,6 +39,8 @@ Go into the folder.
 Run install script (you may need to give execution permission to the script).
 
     ./install.sh
+
+*A default configuration (YAML) is already provided for out-of-the-box functionality*
 
 ## Uninstallation
 
@@ -143,7 +145,7 @@ The `args` key is simply an array containing the arguments that will be supplied
 
 The example above demonstrates the configuration for invoking the shutdown script with a `reboot` argument in a Raspiblitz system.
 
-**Example of a complete configuration**
+**Example of a complete configuration for Raspiblitz**
 
 ```
 fan_config:  
@@ -165,23 +167,15 @@ reboot_script:
 
 ## Compatibility
 
-This should work out of the box in many Debian based distro for raspberry pi, I have tested the following:
+This should work out of the box in many Debian-based distros for raspberry pi, I have tested the following:
 
 - Raspberry PI OS
-- Ubuntu 22.04
-- Umbrel
+- Armbian 25.11.1
 - Raspiblitz
 
-Right now, the installation script heavily depends on the `raspi-config` package in order to enable I2C and Serial. If your distribution does not work well with that package, you may need to find another way to enable I2C and Serial. The main binaries should work just fine once I2C and Serial are enabled.
+Right now, the installation script heavily depends on `systemd` in order to enable the services.
 
 If you are having trouble making this work on your distribution, I recommend checking out this [project](https://gitlab.com/DarkElvenAngel/argononed), which has excellent distribution support.
-
-## Soon...
-
-- More distro testing and support.
-- An easier way to configure and change fan parameters.
-- An easier way to install and update the services.
-- An uninstall script.
 
 ## Acknowledgments
 
