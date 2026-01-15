@@ -94,6 +94,7 @@ enable_services() {
 
   # Copy shutdown executable
   sudo chmod 755 ./$shutdown_binary_name
+  sudo mkdir -p /lib/systemd/system-shutdown/
   sudo cp ./$shutdown_binary_name /lib/systemd/system-shutdown/
 
 
